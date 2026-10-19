@@ -310,6 +310,14 @@ Eine Mail, die die Zustellung verschiebt (Zustellversuch, Verspätung, neuer Zus
     - Den Text des Wunsch-Ablageorts übernimmt die Integration nie – weder in Attribute noch ins Log.
     - Alte Amazon-Versandmails mit Hermes-Nummer hängen die Nummer an das Amazon-Paket; ab dann fragt es Hermes ab.
 
+=== "Andere Shops"
+
+    - Jede Mail eines Absenders, den kein eigener Parser kennt (ein Shop, der ohne Mail des Paketdienstes verschickt, der Hermes Einrichtungs Service), wird nach Sendungsnummern durchsucht.
+    - Gelesen werden Links zur Sendungsverfolgung von DHL, DPD, GLS, Hermes (auch `myhes.de`/`hes.de` des Einrichtungs Service) und UPS – auch hinter einer Weiterleitung, die die Seite als Parameter nennt. Die Links werden nie aufgerufen; es zählt nur eine Nummer in der Form, die der Paketdienst des Links vergibt.
+    - Im Text zählt eine Nummer direkt hinter „Sendungsnummer“, „Trackingnummer“, „Paketnummer“ o. Ä., wenn ihre Form nur ein Paketdienst vergibt (DHL `00340…`/`JJD…`, UPS `1Z…`, Hermes `H…`). 14 Ziffern zählen nur, wenn genau einer von DPD und Hermes in der Mail genannt ist. Kürzere Nummern (10 bis 12 Ziffern) zählen nur aus einem Link: Artikel- und Bestellnummern sehen genauso aus.
+    - Gibt es die Sendung schon und hat sie noch keinen Namen, bekommt sie den Namen des Shops; sonst entsteht ein neues Paket mit diesem Namen. Der Name ist der Anzeigename des Absenders, wenn er eine Rechtsform trägt oder zur Domain passt („Beispiel Shop“ von `beispiel-shop.de`), sonst die Domain. Eine weitergeleitete Mail, eine Mail von einer Adresse bei einem Mailanbieter wie Gmail oder GMX oder von einem Paketdienst gibt keinen Namen.
+    - Mails von Shops und Paketdiensten mit eigenem Parser (Amazon, eBay, AliExpress, Eventim, DHL, DPD, GLS, Hermes, UPS) werden so nicht gelesen: Was sie verlinken, ist nicht immer ein Paket, das kommt (z. B. der Einlieferungsbeleg einer Packstation).
+
 ## Bestellungen ohne Zustellmail
 
 Verschickt ein Marketplace-Händler selbst, kommt vom Shop oft keine „Zugestellt“-Mail. Damit so eine Bestellung nicht für immer als „Versendet“ mit überschrittenem Termin stehen bleibt, schließt die Integration sie von selbst.

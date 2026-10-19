@@ -109,7 +109,7 @@ def test_generic_fallback():
     msg.set_content("Ihre DHL-Sendungsnummer: JJD000012978217606560")
     result = parse_mail(msg)
     assert [(u.carrier, u.number, u.title) for u in result.updates] == [
-        ("dhl", "JJD000012978217606560", None)
+        ("dhl", "JJD000012978217606560", "example.org")
     ]
 
 
