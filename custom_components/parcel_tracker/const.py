@@ -107,7 +107,11 @@ GLS_MAX_EVENTS = 20  # GLS history entries kept per parcel
 # Shops whose orders become parcels ("AMZ…", "EBAY…", "ALI…", "EVT…"); only mails or a
 # merged carrier number (tracking_ref) tell their status, the order itself is never polled.
 SHOP_CARRIERS = frozenset({"amazon", "ebay", "aliexpress", "eventim"})
-MAIL_CARRIERS = SHOP_CARRIERS
+# Carriers nobody can ask: only their mails tell the status. The Hermes Einrichtungs
+# Service (furniture and large appliances, "HES") tracks its 21-digit numbers on its own
+# page (myhes.de), neither Hermes nor 17track knows them.
+MAIL_ONLY_CARRIERS = frozenset({"hes"})
+MAIL_CARRIERS = SHOP_CARRIERS | MAIL_ONLY_CARRIERS
 # Their mails name the items of an order in turn (Eventim: one event of several): a mail
 # with another item is never a further shipment, the order stays one parcel.
 SINGLE_PARCEL_SHOPS = frozenset({"aliexpress", "eventim"})
@@ -159,6 +163,7 @@ CARRIER_NAMES = {
     "dpd": "DPD",
     "gls": "GLS",
     "hermes": "Hermes",
+    "hes": "Hermes Einrichtungs Service",
     "ups": "UPS",
     "amazon": "Amazon",
     "ebay": "eBay",

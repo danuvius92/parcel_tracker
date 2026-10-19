@@ -43,6 +43,7 @@ from .eventim import (
 from .forward import original_message
 from .gls import GLS_GROUP_SENDERS, GLS_SENDER, parse_gls_group_mail, parse_gls_mail
 from .hermes import HERMES_SENDER, parse_hermes_mail
+from .hes import HES_DOMAINS, HES_SENDER, parse_hes_mail
 from .scan import scan_numbers, shop_name
 from .shipping import (
     DHL_COM_DOMAIN,
@@ -77,6 +78,7 @@ _KNOWN_SENDERS = (
     *GLS_GROUP_SENDERS,
     DPD_AT_SENDER,
     HERMES_SENDER,
+    HES_SENDER,
     DHL_SENDER,
     DHL_EXPRESS_SENDER,
     UPS_SENDER,
@@ -198,6 +200,10 @@ def _route(msg: EmailMessage, read_otp: bool) -> MailResult:
     if address == UPS_SENDER and (updates := parse_ups_mail(msg)):
         return MailResult(updates=updates)
     if address == HERMES_SENDER and (updates := parse_hermes_mail(msg)):
+        return MailResult(updates=updates)
+    if (domain in HES_DOMAINS or domain.endswith(tuple(f".{d}" for d in HES_DOMAINS))) and (
+        updates := parse_hes_mail(msg)
+    ):
         return MailResult(updates=updates)
     if address in GLS_GROUP_SENDERS and (updates := parse_gls_group_mail(msg)):
         return MailResult(updates=updates)

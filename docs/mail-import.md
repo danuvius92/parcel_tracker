@@ -310,10 +310,17 @@ Eine Mail, die die Zustellung verschiebt (Zustellversuch, Verspätung, neuer Zus
     - Den Text des Wunsch-Ablageorts übernimmt die Integration nie – weder in Attribute noch ins Log.
     - Alte Amazon-Versandmails mit Hermes-Nummer hängen die Nummer an das Amazon-Paket; ab dann fragt es Hermes ab.
 
+=== "Hermes Einrichtungs Service"
+
+    - Mails von `hes.de` legen ein Paket „Hermes Einrichtungs Service“ an. Die Nummer (21 Ziffern) kommt aus dem Link zu myhes.de, aus „Sendungsnummer:“ oder aus dem Betreff; die Leerzeichen darin fallen weg.
+    - „Auftragseingang deiner Sendung …“ setzt „Angekündigt“. Ein Betreff zu Liefertermin oder Zeitfenster setzt „Unterwegs“ samt dem ersten Datum dahinter und dem Zeitfenster („zwischen 10:00 und 14:00 Uhr“), „heute“ setzt „In Zustellung“, „wurde zugestellt/geliefert“ setzt „Zugestellt“. Ein Betreff mit „nicht“ setzt keinen Status.
+    - „Deine Sendung von:“ wird zum Namen, solange das Paket noch keinen hat (bei einer Firma bis zur Rechtsform: „Beispiel Matratzen GmbH (Hammer)“ wird „Beispiel Matratzen GmbH“).
+    - Die Nummer kennen weder Hermes noch 17track: Den Status liefern nur die Mails. „Sendung verfolgen“ führt zu myhes.de.
+
 === "Andere Shops"
 
     - Jede Mail eines Absenders, den kein eigener Parser kennt (ein Shop, der ohne Mail des Paketdienstes verschickt, der Hermes Einrichtungs Service), wird nach Sendungsnummern durchsucht.
-    - Gelesen werden Links zur Sendungsverfolgung von DHL, DPD, GLS, Hermes (auch `myhes.de`/`hes.de` des Einrichtungs Service) und UPS – auch hinter einer Weiterleitung, die die Seite als Parameter nennt. Die Links werden nie aufgerufen; es zählt nur eine Nummer in der Form, die der Paketdienst des Links vergibt.
+    - Gelesen werden Links zur Sendungsverfolgung von DHL, DPD, GLS, Hermes, dem Hermes Einrichtungs Service (`myhes.de`) und UPS – auch hinter einer Weiterleitung, die die Seite als Parameter nennt. Die Links werden nie aufgerufen; es zählt nur eine Nummer in der Form, die der Paketdienst des Links vergibt.
     - Im Text zählt eine Nummer direkt hinter „Sendungsnummer“, „Trackingnummer“, „Paketnummer“ o. Ä., wenn ihre Form nur ein Paketdienst vergibt (DHL `00340…`/`JJD…`, UPS `1Z…`, Hermes `H…`). 14 Ziffern zählen nur, wenn genau einer von DPD und Hermes in der Mail genannt ist. Kürzere Nummern (10 bis 12 Ziffern) zählen nur aus einem Link: Artikel- und Bestellnummern sehen genauso aus.
     - Gibt es die Sendung schon und hat sie noch keinen Namen, bekommt sie den Namen des Shops; sonst entsteht ein neues Paket mit diesem Namen. Der Name ist der Anzeigename des Absenders, wenn er eine Rechtsform trägt oder zur Domain passt („Beispiel Shop“ von `beispiel-shop.de`), sonst die Domain. Eine weitergeleitete Mail, eine Mail von einer Adresse bei einem Mailanbieter wie Gmail oder GMX oder von einem Paketdienst gibt keinen Namen.
     - Mails von Shops und Paketdiensten mit eigenem Parser (Amazon, eBay, AliExpress, Eventim, DHL, DPD, GLS, Hermes, UPS) werden so nicht gelesen: Was sie verlinken, ist nicht immer ein Paket, das kommt (z. B. der Einlieferungsbeleg einer Packstation).
