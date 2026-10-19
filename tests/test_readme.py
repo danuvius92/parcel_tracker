@@ -508,23 +508,20 @@ def test_hacs_is_not_told_about_the_blueprints_folder():
         "name",
         "homeassistant",
         "render_readme",
-        "zip_release",
-        "filename",
         "country",
     }
     # Built for these countries (carriers, mails and the card are German).
     assert hacs["country"] == ["DE", "AT", "CH"]
 
 
-def test_hacs_installs_from_the_release_zip():
-    """zip_release makes HACS fetch the release asset, which GitHub counts as a
-    download. Every release from v0.3.6 on needs parcel_tracker.zip attached
-    (scripts/build_release_zip.sh)."""
+def test_hacs_installs_from_the_repository():
+    """This fork publishes no releases with parcel_tracker.zip attached: HACS takes
+    custom_components/parcel_tracker of the default branch instead of a release asset
+    (upstream installs from the release zip, scripts/build_release_zip.sh)."""
     import json
 
     hacs = json.loads((ROOT / "hacs.json").read_text(encoding="utf-8"))
-    assert hacs["zip_release"] is True
-    assert hacs["filename"] == "parcel_tracker.zip"
+    assert "zip_release" not in hacs and "filename" not in hacs
     assert hacs["name"] == "Paket Tracker"
     assert hacs["homeassistant"] == "2025.10.0"
     assert hacs["render_readme"] is True
