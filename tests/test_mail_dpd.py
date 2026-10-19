@@ -368,13 +368,14 @@ def test_estimate_with_several_numbers_belongs_to_the_labelled_one():
 
 
 def test_announcement_text_from_another_sender_is_not_read():
-    """Only DPD's own mails are read this way: any other sender just names the parcel."""
+    """Only DPD's own mails are read this way: any other sender just names the parcel (and
+    the shop that sent the mail names it, see ``scan.shop_name``)."""
     msg = _announcement()
     del msg["From"]
     msg["From"] = "Beispielshop <info@beispielshop.example>"
     msg.set_content(f"{msg.get_content()}\nPaketnummer: {NUMBER}\n")
     [u] = parse_mail(msg).updates
-    assert (u.number, u.status, u.title, u.eta_date) == (NUMBER, None, None, None)
+    assert (u.number, u.status, u.title, u.eta_date) == (NUMBER, None, "Beispielshop", None)
 
 
 # ----- the mails after the announcement: today's window, delivered, waiting in a shop -----

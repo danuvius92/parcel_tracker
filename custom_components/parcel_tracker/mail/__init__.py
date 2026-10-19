@@ -22,11 +22,13 @@ from .amazon import (
 from .base import (
     DPD_DOMAINS,
     MailResult,
+    MailUpdate,
     body_text,
     domain_of,
     is_forwarded,
     register_relay_senders,
     sender,
+    sent_at,
     subject,
     unrelay,
 )
@@ -41,6 +43,7 @@ from .eventim import (
 from .forward import original_message
 from .gls import GLS_GROUP_SENDERS, GLS_SENDER, parse_gls_group_mail, parse_gls_mail
 from .hermes import HERMES_SENDER, parse_hermes_mail
+from .scan import scan_numbers, shop_name
 from .shipping import (
     DHL_COM_DOMAIN,
     DHL_DOMAIN,
@@ -183,7 +186,7 @@ def _route(msg: EmailMessage, read_otp: bool) -> MailResult:
                 updates = parse_amazon_legacy(msg, with_order=True)
         if updates or real_amazon:
             return MailResult(updates=updates, amazon=real_amazon)
-        return MailResult(updates=parse_generic(msg))
+        return MailResult(updates=_generic(msg))
     if (domain == DHL_DOMAIN or domain.endswith(f".{DHL_DOMAIN}")) and (
         updates := parse_dhl_mail(msg)
     ):
@@ -208,4 +211,29 @@ def _route(msg: EmailMessage, read_otp: bool) -> MailResult:
     # forwarded by hand is recognised by its subject instead.
     if (address == GLS_SENDER or is_forwarded(msg)) and (updates := parse_gls_mail(msg)):
         return MailResult(updates=updates)
-    return MailResult(updates=parse_generic(msg))
+    return MailResult(updates=_generic(msg))
+
+
+def _generic(msg: EmailMessage) -> list[MailUpdate]:
+    """A mail no parser knows: the numbers ``parse_generic`` finds, and from a sender we
+    do not know (a shop that ships without the carrier writing, the Hermes Einrichtungs
+    Service) also the carrier links and labelled numbers (``scan_numbers``), named after
+    the shop that sent the mail (``shop_name``).
+
+    A known carrier's or shop's own mail that its parser did not read stays as it was:
+    what it links to (a receipt of a parcel somebody sent) is no parcel that comes.
+    """
+    updates = parse_generic(msg)
+    if _known(sender(msg)[0]):
+        return updates
+    sent = sent_at(msg)
+    found = {update.number for update in updates}
+    updates += [
+        MailUpdate(number=number, carrier=carrier, status=None, sent_at=sent)
+        for carrier, number in scan_numbers(msg)
+        if number not in found
+    ]
+    if updates and (name := shop_name(msg)):
+        for update in updates:
+            update.title = update.title or name
+    return updates
