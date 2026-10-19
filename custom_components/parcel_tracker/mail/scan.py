@@ -5,7 +5,8 @@ ever writing, the Hermes Einrichtungs Service, a small shop's "Ihre Bestellung w
 versandt". Only two things are read, both safe on their own:
 
 - a link to a carrier's tracking page (its host says the carrier, its number must have
-  the form that carrier gives), also behind a redirect that names the page in a
+  the form that carrier gives; the Hermes Einrichtungs Service counts as a carrier of its
+  own), also behind a redirect that names the page in a
   parameter. A link is never followed.
 - a number right behind a label ("Sendungsnummer: …", "Trackingnummer …"). One of a form
   only one carrier gives is taken as it is; 14 digits (DPD or Hermes) only if exactly one
@@ -35,8 +36,8 @@ from .base import (
 )
 
 # The hosts of the carriers' tracking pages (a sub-domain counts as its parent). The
-# Hermes Einrichtungs Service (furniture and large appliances, "HES") is tracked by
-# Hermes: its numbers are booked under Hermes.
+# Hermes Einrichtungs Service (furniture and large appliances, "HES") has a page of its
+# own: its numbers are no Hermes numbers.
 _HOSTS = {
     "dhl.de": "dhl",
     "dhl.com": "dhl",
@@ -52,10 +53,8 @@ _HOSTS = {
     "myhermes.de": "hermes",
     "hermesworld.com": "hermes",
     "hermes-europe.co.uk": "hermes",
-    "hes.de": "hermes",
-    "myhes.de": "hermes",
-    "hermes-einrichtungsservice.de": "hermes",
-    "hermes-einrichtungs-service.de": "hermes",
+    "hes.de": "hes",
+    "myhes.de": "hes",
     "ups.com": "ups",
 }
 # The forms each carrier gives its numbers (after spaces and hyphens are dropped).
@@ -65,6 +64,8 @@ _FORMS = {
     # (12 digits: the 11 of the parcel and a check digit, see ``_normal``)
     "gls": re.compile(r"\d{11,12}"),
     "hermes": re.compile(r"H\d{19}|\d{14}"),
+    # ("9999201227000 04400001": 21 digits seen; only ever read from a link to its page)
+    "hes": re.compile(r"\d{18,24}"),
     "ups": re.compile(r"1Z[0-9A-Z]{16}"),
 }
 # Forms only one carrier gives: a labelled number of such a form needs no carrier named.
@@ -108,7 +109,7 @@ _CARRIER_WORDS = (
     ("dhl", re.compile(r"\bdhl\b|\bdeutsche\s+post\b", re.IGNORECASE)),
     ("dpd", re.compile(r"\bdpd\b", re.IGNORECASE)),
     ("gls", re.compile(r"\bgls\b", re.IGNORECASE)),
-    ("hermes", re.compile(r"\bhermes\b|\beinrichtungs[\s-]?service\b", re.IGNORECASE)),
+    ("hermes", re.compile(r"\bhermes\b(?![\s-]+einrichtungs)", re.IGNORECASE)),
     ("ups", re.compile(r"\bups\b", re.IGNORECASE)),
 )
 

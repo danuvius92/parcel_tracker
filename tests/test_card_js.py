@@ -230,7 +230,8 @@ def test_hermes_has_a_coloured_dot_instead_of_a_logo(card):
 
 def test_labels_and_ebay_order_state(card):
     assert card["labels"] == {
-        "dhl": "DHL", "dpd": "DPD", "gls": "GLS", "hermes": "Hermes", "ups": "UPS",
+        "dhl": "DHL", "dpd": "DPD", "gls": "GLS", "hermes": "Hermes",
+        "hes": "Hermes Einrichtungs Service", "ups": "UPS",
         "amazon": "Amazon", "ebay": "eBay", "aliexpress": "AliExpress", "eventim": "Eventim",
         "other": "17track",
     }

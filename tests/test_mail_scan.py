@@ -60,8 +60,10 @@ def test_link_hermes_fragment_and_ups():
 
 
 def test_link_hermes_einrichtungs_service():
-    link = "https://www.myhes.de/sendungsverfolgung?sendungsnummer=12345678901234"
-    assert link_numbers(link) == [("hermes", "12345678901234")]
+    link = "https://myhes.de/de/tracking/999920122700004400001?utm_source=cm&utm_medium=email"
+    assert link_numbers(link) == [("hes", "999920122700004400001")]
+    # (a Hermes number is no number of its page)
+    assert link_numbers("https://myhes.de/de/tracking/12345678901234") == []
 
 
 def test_link_redirect_with_dhl_number():
@@ -141,15 +143,10 @@ def test_shop_mail_names_existing_unnamed_parcel_only():
     assert named.name == "Sofa"
 
 
-def test_hermes_einrichtungs_service_mail():
-    msg = _msg(
-        "Ihre Lieferung wird von Hermes Einrichtungs Service zugestellt.\n"
-        "Sendungsnummer: 12345678901234",
-        from_="Hermes Einrichtungs Service <noreply@hes.de>",
-        subject="Ihre Lieferung",
-    )
-    # (a carrier names no parcel)
-    assert _found(msg) == [("hermes", "12345678901234", None)]
+def test_shop_mail_with_hes_link():
+    html = '<a href="https://myhes.de/de/tracking/999920122700004400001">Lieferung verfolgen</a>'
+    msg = _msg("Deine Bestellung wird vom Hermes Einrichtungs Service geliefert.", html=html)
+    assert _found(msg) == [("hes", "999920122700004400001", "Beispiel Shop")]
 
 
 def test_private_and_forwarded_senders_name_nothing():

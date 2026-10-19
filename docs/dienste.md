@@ -8,6 +8,7 @@ Die kurze Antwort: DPD, GLS und Hermes funktionieren sofort. DHL und UPS brauche
 | DPD | ja, ohne Key (nur Status, kein Ort) | optional: eine DPD-Mail legt das Paket an, den Status liefert die Abfrage | keine |
 | GLS | ja, ohne Key (mit PLZ auch der Verlauf) | ja, aus den GLS-Mails | keine; die PLZ für den Verlauf |
 | Hermes | ja, ohne Key | ja, aus den Hermes-Mails (sie nennen den Liefertag) | keine |
+| Hermes Einrichtungs Service | nein (eigene Sendungsverfolgung auf myhes.de) | ja, nur aus Mails | [E-Mail-Import](mail-import.md) |
 | UPS | nur mit eigenem UPS-Entwicklerzugang | ja, aus den UPS-Mails | ohne Zugang nur aus den UPS-Mails; für den Live-Status [Client-ID und Secret](#ups) |
 | Amazon | nein (keine Anmeldung bei Amazon) | ja, nur aus Mails | [E-Mail-Import](mail-import.md) |
 | eBay | nein | ja, nur aus Mails | [E-Mail-Import](mail-import.md) |
@@ -124,6 +125,11 @@ GLS-Pakete fragt die Integration über die offene Sendungsverfolgung von gls-gro
 
 - Abgefragt wird die öffentliche Hermes-Sendungsverfolgung, nur mit der Sendungsnummer (`H…` mit 19 Ziffern oder 14 Ziffern). Zugangsdaten und PLZ brauchst du nicht.
 - Hermes liefert Status und Verlauf, aber keinen Liefertag. Den übernimmt die Integration aus den Hermes-Mails.
+
+## Hermes Einrichtungs Service
+
+- Möbel und Großgeräte liefert der Hermes Einrichtungs Service (HES). Seine Sendungsnummern (21 Ziffern, in den Mails mit Leerzeichen: „9999999999999 99999901“) kennen weder Hermes noch 17track: Den Status liefern nur die Mails von `hes.de`, „Sendung verfolgen“ führt zu myhes.de.
+- Den Namen bekommt das Paket aus „Deine Sendung von:“ (z. B. „Beispiel Matratzen GmbH“).
 
 ## UPS
 
